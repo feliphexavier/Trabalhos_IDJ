@@ -1,0 +1,17 @@
+# Build
+build/
+*.o
+*.so
+*.so.*
+
+# IDE
+.vscode/
+*.user
+
+# SO
+*.log
+
+# Libs vendorizadas (baixadas via git clone, não fazem parte do código do projeto)
+/SDL/
+/SDL_image/
+/SDL_mixer/
