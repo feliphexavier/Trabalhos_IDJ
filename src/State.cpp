@@ -1,12 +1,28 @@
 #include "State.h"
 #include "SDL3/SDL.h"
+#include "SpriteRenderer.h"
+#include "Zombie.h"
 State::State(){
-    this->quitRequested = false;
-    bg.Open("resources/img/Background.png");
+    quitRequested = false;
     music.Open("resources/audio/BGM.wav");
     music.Play();
+
+    GameObject* bgObject = new GameObject();
+    SpriteRenderer* bgRenderer = new SpriteRenderer(*bgObject, "resources/img/Background.png");
+    bgObject->AddComponent(bgRenderer);
+    AddObject(bgObject);
+
+    GameObject* zombieObject = new GameObject();
+    zombieObject->box.x = 600;
+    zombieObject->box.y = 450;
+    Zombie* zombie = new Zombie(*zombieObject);
+    zombieObject->AddComponent(zombie);
+    AddObject(zombieObject);
 }
 
+State::~State(){
+    objectArray.clear();
+}
 void State::Update(float dt){
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -14,12 +30,28 @@ void State::Update(float dt){
             quitRequested = true;
         }
     }
+
+    for (auto& go : objectArray) {
+        go->Update(dt);
+    }
+
+    for (int i = (int)objectArray.size() - 1; i >= 0; i--) {
+        if (objectArray[i]->IsDead()) {
+            objectArray.erase(objectArray.begin() + i);
+        }
+    }
 }
 
 void State::Render(){
-    bg.Render(0,0);
+    for (auto& go : objectArray) {
+        go->Render();
+    }
 }
 
 bool State::QuitRequested(){
-    return this->quitRequested;
+    return quitRequested;
+}
+
+void State::AddObject(GameObject* go){
+    objectArray.emplace_back(go);
 }
