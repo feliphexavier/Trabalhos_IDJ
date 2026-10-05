@@ -2,6 +2,7 @@
 #include <SDL3_mixer/SDL_mixer.h>
 #include "Game.h"
 #include <iostream>
+#include "Resources.h"
 
 Game* Game::instance = nullptr; 
 static MIX_Mixer* mixer = nullptr;
@@ -73,4 +74,7 @@ void Game::Run(){
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
     }
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }

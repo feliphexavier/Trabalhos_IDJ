@@ -12,6 +12,7 @@ class State{
     ~State();
     bool QuitRequested();
     void Update(float dt);
+    void LoadAssets();
     void AddObject(GameObject* go);
     void Render();
     private:

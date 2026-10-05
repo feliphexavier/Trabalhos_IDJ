@@ -1,0 +1,75 @@
+#include "Resources.h"
+#include "Game.h"
+#include <SDL3_image/SDL_image.h>
+#include <iostream>
+
+std::unordered_map<std::string, SDL_Texture*> Resources::imageTable;
+std::unordered_map<std::string, MIX_Audio*> Resources::musicTable;
+std::unordered_map<std::string, MIX_Audio*> Resources::soundTable;
+
+SDL_Texture* Resources::GetImage(std::string file) {
+    auto it = imageTable.find(file);
+    if (it != imageTable.end()) {
+        return it->second;
+    }
+    SDL_Texture* texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
+    if (texture == nullptr) {
+        std::cerr << "Erro ao carregar textura: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+    imageTable[file] = texture;
+    return texture;
+}
+
+void Resources::ClearImages() {
+    for (auto& pair : imageTable) {
+        SDL_DestroyTexture(pair.second);
+    }
+    imageTable.clear();
+}
+
+MIX_Audio* Resources::GetMusic(std::string file) {
+    auto it = musicTable.find(file);
+    if (it != musicTable.end()) {
+        return it->second;
+    }
+
+    MIX_Audio* music = MIX_LoadAudio(Game::GetInstance().GetMixer(), file.c_str(), false);
+    if (music == nullptr) {
+        std::cerr << "Erro ao abrir música: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+
+    musicTable[file] = music;
+    return music;
+}
+
+void Resources::ClearMusics() {
+    for (auto& pair : musicTable) {
+        MIX_DestroyAudio(pair.second);
+    }
+    musicTable.clear();
+}
+
+MIX_Audio* Resources::GetSound(std::string file) {
+    auto it = soundTable.find(file);
+    if (it != soundTable.end()) {
+        return it->second;
+    }
+
+    MIX_Audio* sound = MIX_LoadAudio(Game::GetInstance().GetMixer(), file.c_str(), true);
+    if (sound == nullptr) {
+        std::cerr << "Erro ao abrir som: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+
+    soundTable[file] = sound;
+    return sound;
+}
+
+void Resources::ClearSounds() {
+    for (auto& pair : soundTable) {
+        MIX_DestroyAudio(pair.second);
+    }
+    soundTable.clear();
+}

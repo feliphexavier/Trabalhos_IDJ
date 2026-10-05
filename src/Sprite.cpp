@@ -3,7 +3,7 @@
 #include <SDL3_image/SDL_image.h>
 #include "Game.h"
 #include <iostream>
-
+#include "Resources.h"
 Sprite::Sprite(){
     texture = nullptr;
     frameCountW = 1;
@@ -25,7 +25,7 @@ void Sprite::Open(std::string file){
         SDL_DestroyTexture(texture);
         texture = nullptr;
     }
-    texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
+    texture = Resources::GetImage(file);
     if (texture == nullptr) {
         std::cout << "Erro ao carregar textura: " << SDL_GetError() << std::endl;
         return;
