@@ -3,6 +3,7 @@
 #include "Game.h"
 #include <iostream>
 #include "Resources.h"
+#include "InputManager.h"
 
 Game* Game::instance = nullptr; 
 static MIX_Mixer* mixer = nullptr;
@@ -36,6 +37,10 @@ Game::Game(std::string title, int width, int height) {
     }
 
     state = new State();
+
+    frameStart = SDL_GetTicks();
+    dt = 0;
+
 }
 Game& Game::GetInstance(){
     if (instance == nullptr){
@@ -66,10 +71,24 @@ SDL_Renderer* Game::GetRenderer(){
 MIX_Mixer* Game::GetMixer(){
     return mixer;
 }
+
+void Game::CalculateDeltaTime(){
+    int previous = frameStart;
+    frameStart = SDL_GetTicks();
+    dt = (frameStart - previous) / 1000.0f;
+    
+}
+
+float Game::GetDeltaTime(){
+    return dt;
+}
+
 void Game::Run(){
     while(!state->QuitRequested()){
+        CalculateDeltaTime();
         SDL_RenderClear(renderer);
-        state->Update(0);
+        InputManager::GetInstance().Update();
+        state->Update(GetDeltaTime());
         state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(33);

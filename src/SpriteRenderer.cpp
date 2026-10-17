@@ -33,3 +33,7 @@ void SpriteRenderer::Update(float dt){
 void SpriteRenderer::Render(){
     sprite.Render(associated.box.x,associated.box.y,associated.box.w,associated.box.h);
 }
+
+void SpriteRenderer::SetCameraFollower(bool cameraFollower){
+    sprite.cameraFollower = cameraFollower;
+}

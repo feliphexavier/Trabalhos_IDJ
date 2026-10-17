@@ -16,5 +16,6 @@ void TileSet::RenderTile(unsigned index, float x, float y) {
     tileSet.SetFrame(index);
     tileSet.Render((int)x, (int)y, tileWidth, tileHeight);
 }
+
 int TileSet::GetTileWidth()  { return tileWidth; }
 int TileSet::GetTileHeight() { return tileHeight; }

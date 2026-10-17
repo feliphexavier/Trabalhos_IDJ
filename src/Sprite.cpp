@@ -4,21 +4,22 @@
 #include "Game.h"
 #include <iostream>
 #include "Resources.h"
+#include "Camera.h"
 Sprite::Sprite(){
+    cameraFollower=false;
     texture = nullptr;
     frameCountW = 1;
     frameCountH = 1;
 }
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH){
+    cameraFollower=false;
     texture = nullptr;
     Open(file);
     SetFrameCount(frameCountW, frameCountH);
     SetFrame(0);
 }
 Sprite::~Sprite(){
-    if(texture != nullptr){
-        SDL_DestroyTexture(texture);
-    }
+    
 }
 void Sprite::Open(std::string file){
     if (texture != nullptr) {
@@ -50,11 +51,16 @@ void Sprite::SetClip(int x, int y, int w, int h){
 
 void Sprite::Render(int x, int y, int w, int h){
     SDL_FRect dstrect;
-    dstrect.x = (float)x;
-    dstrect.y = (float)y;
+   
     dstrect.w = (float)w;
     dstrect.h = (float)h;
-
+    if (cameraFollower) {
+        dstrect.x = x;
+        dstrect.y = y;
+    } else {
+        dstrect.x = x - Camera::pos.x;
+        dstrect.y = y - Camera::pos.y;
+    }
     SDL_RenderTexture(Game::GetInstance().GetRenderer(), texture, &clipRect, &dstrect);
 }
 

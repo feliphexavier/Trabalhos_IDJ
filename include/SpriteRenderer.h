@@ -14,6 +14,7 @@ public:
     void Update(float dt) override;
     void Render() override;
     void SetFrame(int frame);
+    void SetCameraFollower(bool cameraFollower);
 private:
     Sprite sprite;
 };

@@ -11,14 +11,18 @@ class Game{
     State& GetState();
     static Game& GetInstance();
     MIX_Mixer* GetMixer();
-
+    float GetDeltaTime();
     private:
     Game(std::string title, int width, int height);
     std::string title;
     int width;
     int height;
+    int frameStart;
+    float dt;
+    void CalculateDeltaTime();
     static Game* instance;
     SDL_Window* window;
     SDL_Renderer* renderer;
     State* state;
+
 };

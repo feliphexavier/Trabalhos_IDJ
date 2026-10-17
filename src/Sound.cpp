@@ -7,11 +7,7 @@ Sound::Sound(std::string file) : Sound() {
     Open(file);
 }
 Sound::~Sound() {
-    if (chunk != nullptr) {
-        Stop();
-        MIX_DestroyTrack(track);
-        MIX_DestroyAudio(chunk);
-    }
+    
 }
 void Sound::Open(std::string file) {
     MIX_Mixer* mixer = Game::GetInstance().GetMixer(); 
