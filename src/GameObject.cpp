@@ -2,6 +2,8 @@
 
 GameObject::GameObject() {
     isDead = false;
+    started = false;
+    angleDeg = 0;
 }
 
 GameObject::~GameObject() {
@@ -22,7 +24,12 @@ void GameObject::Render() {
         c->Render();
     }
 }
-
+void GameObject::Start() {
+    for (size_t i = 0; i < components.size(); i++) {
+        components[i]->Start();
+    }
+    started = true;
+}
 bool GameObject::IsDead() {
     return isDead;
 }
@@ -33,6 +40,7 @@ void GameObject::RequestDelete() {
 
 void GameObject::AddComponent(Component* cpt) {
     components.emplace_back(cpt);
+    if (started) cpt->Start();
 }
 
 void GameObject::RemoveComponent(Component* cpt) {

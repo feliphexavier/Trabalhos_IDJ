@@ -8,8 +8,10 @@
 #include "InputManager.h"
 #include "Camera.h"
 #include <iostream>
+#include "Character.h"
+#include "PlayerController.h"
 
-State::State() : quitRequested(false){
+State::State() : quitRequested(false), started(false){
     GameObject* bg = new GameObject();
     bg->AddComponent(new SpriteRenderer(*bg, "resources/img/Background.png"));
     SpriteRenderer* bgRenderer = new SpriteRenderer(*bg, "resources/img/Background.png");
@@ -24,8 +26,15 @@ State::State() : quitRequested(false){
     TileSet* tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
     mapObject->AddComponent(new TileMap(*mapObject, "resources/map/map.txt", tileSet));
     AddObject(mapObject);
-    
-    LoadAssets();
+    GameObject* charObject = new GameObject();
+    Character* character = new Character(*charObject, "resources/img/Player.png");
+    charObject->AddComponent(character);
+    charObject->box.x = 1280 - charObject->box.w / 2;
+    charObject->box.y = 1280 - charObject->box.h / 2;
+    Character::player = character;
+    charObject->AddComponent(new PlayerController(*charObject));
+    AddObject(charObject);
+    Camera::Follow(charObject);
 }
 
 State::~State(){
@@ -40,9 +49,14 @@ void State::Update(float dt){
 
     if (input.KeyPress(SPACE_KEY)) {
         GameObject* zombieObject = new GameObject();
+        
+        
         zombieObject->AddComponent(new Zombie(*zombieObject));
         zombieObject->box.x = input.GetMouseX() + Camera::pos.x;
         zombieObject->box.y = input.GetMouseY() + Camera::pos.y;
+
+        
+
         AddObject(zombieObject);
     }
     Camera::Update(dt);
@@ -74,6 +88,25 @@ bool State::QuitRequested(){
     return quitRequested;
 }
 
-void State::AddObject(GameObject* go){
-    objectArray.emplace_back(go);
+
+void State::Start() {
+    LoadAssets();
+    for (size_t i = 0; i < objectArray.size(); i++) {
+        objectArray[i]->Start();
+    }
+    started = true;
+}
+
+std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
+    std::shared_ptr<GameObject> ptr(go);
+    objectArray.push_back(ptr);
+    if (started) ptr->Start();
+    return std::weak_ptr<GameObject>(ptr);
+}
+
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {
+    for (auto& obj : objectArray) {
+        if (obj.get() == go) return std::weak_ptr<GameObject>(obj);
+    }
+    return std::weak_ptr<GameObject>();
 }

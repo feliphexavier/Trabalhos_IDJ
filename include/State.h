@@ -13,10 +13,13 @@ class State{
     bool QuitRequested();
     void Update(float dt);
     void LoadAssets();
-    void AddObject(GameObject* go);
     void Render();
+    void Start();
+    std::weak_ptr<GameObject> AddObject(GameObject* go);
+    std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
     private:
-    std::vector<std::unique_ptr<GameObject>> objectArray;
+    bool started;
+    std::vector<std::shared_ptr<GameObject>> objectArray; 
     Music music;
     bool quitRequested;
 };

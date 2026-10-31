@@ -8,6 +8,7 @@ Animator::Animator(GameObject& associated) : Component(associated) {
     frameTime = 0;
     currentFrame = 0;
     timeElapsed = 0;
+    current = "";
 }
 void Animator::Update(float dt){
     if (frameTime == 0) {
@@ -31,17 +32,20 @@ void Animator::Render(){
     
 }
 void Animator::SetAnimation(std::string name){
+    if (name == current) return;
     auto it = animations.find(name);
     if (it != animations.end()) {
+        current = name;
         Animation anim = it->second;
         frameStart = anim.frameStart;
         frameEnd = anim.frameEnd;
         frameTime = anim.frameTime;
+        flip = anim.flip;
         currentFrame = frameStart;
         timeElapsed = 0;
         SpriteRenderer* spriteRenderer = associated.GetComponent<SpriteRenderer>();
         if (spriteRenderer != nullptr) {
-            spriteRenderer->SetFrame(currentFrame);
+            spriteRenderer->SetFrame(currentFrame, flip);
         }
     }
 }

@@ -84,6 +84,7 @@ float Game::GetDeltaTime(){
 }
 
 void Game::Run(){
+    state->Start();
     while(!state->QuitRequested()){
         CalculateDeltaTime();
         SDL_RenderClear(renderer);
