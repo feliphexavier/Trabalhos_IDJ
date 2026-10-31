@@ -56,11 +56,7 @@ cmake --build build
 ./build/Debug/Jogo
 ```
 
-ou, se seu gerador não criar subpasta de configuração:
 
-```bash
-./build/Jogo
-```
 
 
 
