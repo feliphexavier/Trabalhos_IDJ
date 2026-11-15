@@ -10,8 +10,8 @@ add_subdirectory(SDL_mixer EXCLUDE_FROM_ALL)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cpp)
 add_executable(Jogo ${SOURCES} ${CMAKE_SOURCE_DIR}/main.cpp)
+#target_compile_definitions(Jogo PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 target_include_directories(Jogo PRIVATE include)
-
 target_link_libraries(Jogo PRIVATE
     SDL3::SDL3
     SDL3_image::SDL3_image

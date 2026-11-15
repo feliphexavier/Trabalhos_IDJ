@@ -9,8 +9,12 @@ public:
     void Damage(int damage);
     void Update(float dt) override;
     void Render() override;
-
+    void Start() override;
+    void NotifyCollision(GameObject& other) override;
+    ~Zombie();
+    static int zombieCounter;
 private:
+    bool facingLeft;
     int hitpoints;
     Sound deathSound;
     Sound hitSound;

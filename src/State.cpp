@@ -10,7 +10,9 @@
 #include <iostream>
 #include "Character.h"
 #include "PlayerController.h"
-
+#include "Collider.h"
+#include "Collision.h"
+#include "WaveSpawner.h"
 State::State() : quitRequested(false), started(false){
     GameObject* bg = new GameObject();
     bg->AddComponent(new SpriteRenderer(*bg, "resources/img/Background.png"));
@@ -35,6 +37,10 @@ State::State() : quitRequested(false), started(false){
     charObject->AddComponent(new PlayerController(*charObject));
     AddObject(charObject);
     Camera::Follow(charObject);
+
+    GameObject* spawnerObject = new GameObject();
+    spawnerObject->AddComponent(new WaveSpawner(*spawnerObject));
+    AddObject(spawnerObject);
 }
 
 State::~State(){
@@ -47,22 +53,30 @@ void State::Update(float dt){
         quitRequested = true;
     }
 
-    if (input.KeyPress(SPACE_KEY)) {
-        GameObject* zombieObject = new GameObject();
-        
-        
-        zombieObject->AddComponent(new Zombie(*zombieObject));
-        zombieObject->box.x = input.GetMouseX() + Camera::pos.x;
-        zombieObject->box.y = input.GetMouseY() + Camera::pos.y;
-
-        
-
-        AddObject(zombieObject);
-    }
     Camera::Update(dt);
 
     for (size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
+    }
+
+    for (size_t i = 0; i < objectArray.size(); i++) {
+        if (objectArray[i]->GetComponent<Collider>() == nullptr) continue;
+
+        for (size_t j = i + 1; j < objectArray.size(); j++) {
+            Collider* a = objectArray[i]->GetComponent<Collider>();
+            if (a == nullptr) break;   // perdeu o collider (morreu): para de testar esse objeto
+
+            Collider* b = objectArray[j]->GetComponent<Collider>();
+            if (b == nullptr) continue;
+
+            float angleA = objectArray[i]->angleDeg * M_PI / 180.0;
+            float angleB = objectArray[j]->angleDeg * M_PI / 180.0;
+
+            if (Collision::IsColliding(a->box, b->box, angleA, angleB)) {
+                objectArray[i]->NotifyCollision(*objectArray[j]);
+                objectArray[j]->NotifyCollision(*objectArray[i]);
+            }
+        }
     }
 
     for (int i = (int)objectArray.size() - 1; i >= 0; i--) {
@@ -110,3 +124,4 @@ std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {
     }
     return std::weak_ptr<GameObject>();
 }
+

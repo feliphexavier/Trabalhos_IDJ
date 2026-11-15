@@ -1,5 +1,5 @@
 #include "GameObject.h"
-
+#include <iostream>
 GameObject::GameObject() {
     isDead = false;
     started = false;
@@ -44,10 +44,19 @@ void GameObject::AddComponent(Component* cpt) {
 }
 
 void GameObject::RemoveComponent(Component* cpt) {
+    
     for (auto it = components.begin(); it != components.end(); ++it) {
         if (*it == cpt) {
             components.erase(it);
             break;
         }
+
+    }
+}
+
+void GameObject::NotifyCollision(GameObject& other) {
+    for (size_t i = 0; i < components.size(); i++) {
+        components[i]->NotifyCollision(other);
+        
     }
 }

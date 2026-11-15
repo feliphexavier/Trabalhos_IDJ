@@ -4,10 +4,12 @@
 #include <iostream>
 #include "Resources.h"
 #include "InputManager.h"
-
+#include <cstdlib>
+#include <ctime>
 Game* Game::instance = nullptr; 
 static MIX_Mixer* mixer = nullptr;
 Game::Game(std::string title, int width, int height) {
+    srand(time(NULL));
     instance = this;
     this->title = title;
     this->width = width;

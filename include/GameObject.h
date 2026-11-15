@@ -20,6 +20,7 @@ public:
     T* GetComponent();
     Rect box;
     double angleDeg;
+    void NotifyCollision(GameObject& other);
 private:
     std::vector<Component*> components;
     bool isDead;

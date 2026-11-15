@@ -7,6 +7,7 @@ class Component {
 public:
     virtual void Start() {}
     Component(GameObject& associated);
+    virtual void NotifyCollision(GameObject& other) {}
     virtual ~Component();
     virtual void Update(float dt) = 0;
     virtual void Render() = 0;
